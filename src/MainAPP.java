@@ -5,6 +5,8 @@ public class MainAPP {
 		
 		// ----   FASE 1    ----
 		
+		System.out.println("\n--- FASE 1 ---\n");
+		
 		try {
 			
 			Rocket rocket_1 = new Rocket("x", 3);
@@ -22,7 +24,20 @@ public class MainAPP {
 		
 		
 		
-		// ----   FASE 1    ----
+		// ----   FASE 2    ----
+		
+		System.out.println("\n--- FASE 2 ---\n");
+		Rocket rocket_3 = new Rocket("32WESSDS", new int[]{10,30,80});
+		
+		System.out.println(rocket_3.toString());
+		
+		
+		Rocket rocket_4 = new Rocket("LDSFJA32", 6);
+		rocket_4.setJetsPowers(new int[] {30,40,50,50,30,10});
+		
+		System.out.println(rocket_4.toString());
+		
+	
 
 	}
 
