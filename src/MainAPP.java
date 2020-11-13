@@ -38,6 +38,20 @@ public class MainAPP {
 		System.out.println(rocket_4.toString());
 		
 	
+	// ----   FASE 3    ----
+		
+		System.out.println("\n--- FASE 3 ---\n");
+		
+		Rocket rocket_5 = new Rocket("12345678", new int[] {10, 20, 40});
+		System.out.println(rocket_5.toString());
+		rocket_5.accelerate(new int[] {5,10,50});
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		rocket_5.decelerate(new int[] {-2, 1, 0});
 
 	}
 

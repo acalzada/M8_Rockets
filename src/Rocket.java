@@ -52,18 +52,12 @@ public class Rocket {
 	 * Method for setting the power of the Rocket jets.
 	 * 
 	 * @param jetsPowers int[] with the power of each jet in the Rocket.
+	 * 
 	 * @throws MissingJetPowersException If the number of jet engine power values differs from the rocket's number of jet engines.
 	 */
 	public void setJetsPowers(int[] jetsPowers) {
-		// Chech that the number of jet powers passed is appropriate for the rocket. 
-		if(jetsPowers.length > this.numJets) {
-			throw new MissingJetPowersException("Too many jet power values: The number of jet powers passed was " + jetsPowers.length + 
-												" but this rocket has " + this.numJets + " jet engines.\n");
-		}
-		if(jetsPowers.length < this.numJets) {
-			throw new MissingJetPowersException("Too few jet power values: The number of jet powers passed was " + jetsPowers.length + 
-					" but this rocket has " + this.numJets + " jet engines.\n");
-		}
+		
+		this.checkJetPowersLength(jetsPowers.length);
 		
 		// Set all jet engine powers.
 		for (int idx = 0; idx < this.numJets; idx++) {
@@ -71,7 +65,54 @@ public class Rocket {
 		}
 	}
 	
+	public void accelerate(int[] jetPowers) {
+		
+		this.checkJetPowersLength(jetPowers.length);
+		
+		for (int idx = 0; idx < this.numJets; idx++) {
+			Jet jet = this.jetsPower.get(idx);
+			try{
+				jet.setTargetPower(jetPowers[idx]);
+			}catch(TargetPowerOutOfRangeException ex) {
+				// No need to halt the program because the jet engine already has safety measures.
+				// But We want to notify the user that is requesting too much and its demands won't be satisfied.
+				ex.printStackTrace();
+			}
+			Thread jetThread = new Thread(jet);
+			jetThread.start();
+		}
+	}
 	
+	public void decelerate(int[] jetPowers) {
+		
+		this.checkJetPowersLength(jetPowers.length);
+		
+		for (int idx = 0; idx < this.numJets; idx++) {
+			Jet jet = this.jetsPower.get(idx);
+			try{
+				jet.setTargetPower(jetPowers[idx]);
+			}catch(TargetPowerOutOfRangeException ex) {
+				// No need to halt the program because the jet engine already has safety measures.
+				// But We want to notify the user that is requesting too much and its demands won't be satisfied.
+				ex.printStackTrace();
+			}
+			Thread jetThread = new Thread(jet);
+			jetThread.start();
+		}
+	}
+	
+	
+	private void checkJetPowersLength(int numOfJetPowersPassed) {
+		// Chech that the number of jet powers passed is appropriate for the rocket. 
+		if(numOfJetPowersPassed > this.numJets) {
+			throw new MissingJetPowersException("Too many jet power values: The number of jet powers passed was " + numOfJetPowersPassed + 
+												" but this rocket has " + this.numJets + " jet engines.\n");
+		}
+		if(numOfJetPowersPassed < this.numJets) {
+			throw new MissingJetPowersException("Too few jet power values: The number of jet powers passed was " + numOfJetPowersPassed + 
+					" but this rocket has " + this.numJets + " jet engines.\n");
+		}
+	}
 	
 	
 	/**
