@@ -11,6 +11,7 @@ public class Rocket {
 	char[] id = new char[8];
 	int numJets;
 	ArrayList<Jet> jetsPower;
+	ArrayList<Thread> jetsStatus; // Watch list to know when all jet engines have reached target power level.
 	
 	
 	/**
@@ -28,7 +29,8 @@ public class Rocket {
 		}
 		this.id = id.toCharArray();
 		this.numJets = numJets;
-		jetsPower = new ArrayList<Jet>(this.numJets);
+		this.jetsPower = new ArrayList<Jet>(this.numJets);
+		this.jetsStatus = new ArrayList<Thread>();
 	}
 	
 	/**
@@ -80,6 +82,7 @@ public class Rocket {
 			}
 			Thread jetThread = new Thread(jet);
 			jetThread.start();
+			this.jetsStatus.add(jetThread);  // Add thread to watch list to know when all jet engines have reached target power level.
 		}
 	}
 	
@@ -98,6 +101,7 @@ public class Rocket {
 			}
 			Thread jetThread = new Thread(jet);
 			jetThread.start();
+			this.jetsStatus.add(jetThread);  // Add thread to watch list to know when all jet engines have reached target power level.
 		}
 	}
 	
@@ -135,6 +139,28 @@ public class Rocket {
 			return info.substring(0,  info.length() - 2) + "]\n";
 	}
 	
+	
+	/**
+	 * Method to halt the execution to wait for jet's threads to finish 
+	 * and remove them from the jetsStatus arrayList. 
+	 */
+	public void waitForJetThreadsToFinish() {
+		// Check if there are any threads in the status list.
+		while(!this.jetsStatus.isEmpty()) {
+			
+			ArrayList<Thread> jetsToDelete = new ArrayList<>();
+			
+			for(Thread t : this.jetsStatus) {
+				// If thread is not alive, remove it from status ArrayList
+				if(!t.isAlive())
+					jetsToDelete.add(t);
+			}
+
+			for(int idx = 0; idx < jetsToDelete.size(); idx++) {
+				this.jetsStatus.remove(jetsToDelete.get(idx));
+			}
+		}
+	}
 	
 	
 }
