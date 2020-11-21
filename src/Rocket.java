@@ -4,6 +4,10 @@ import java.util.ArrayList;
  * @author angel
  *
  */
+/**
+ * @author angel
+ *
+ */
 public class Rocket {
 	
 	private int rocketIdLengthRequired = 8;  // Defines the length of the Rocket Id attribute.
@@ -12,7 +16,7 @@ public class Rocket {
 	int numJets;
 	ArrayList<Jet> jetsPower;
 	ArrayList<Thread> jetsStatus; // Watch list to know when all jet engines have reached target power level.
-	
+	double speed = 0.0; // Current speed of the rocket.
 	
 	/**
 	 * Rocket class constructor.
@@ -67,7 +71,60 @@ public class Rocket {
 		}
 	}
 	
-	public void accelerate(int[] jetPowers) {
+	
+	
+	public void setRocketTargetSpeed(int trgtSpeed) {
+		if (trgtSpeed != this.speed) {
+			
+			// Power needed to reach the requested speed
+			double totalPowerNeeded = (double)Math.pow((trgtSpeed - this.speed)/100.0, 2.0);
+			
+
+			int totalMaxPower = 0;  // Maximum power that can be generated with all the jet engines working together.
+			for(Jet jet : this.jetsPower ) {
+				totalMaxPower = totalMaxPower + jet.maxPower;
+			}
+			
+			// Compute the power required for each jet engine to reach the requested target speed.
+			double[] jetsTrgtPowers = new double[this.numJets];
+			for(int idx = 0; idx < this.numJets; idx++) {
+				jetsTrgtPowers[idx] = (((this.jetsPower.get(idx).maxPower / (double)totalMaxPower)) * totalPowerNeeded);
+			}
+			
+			// Set the speed to the new value based on the requested speed and the maximum feasible speed based on the maximum jet engine powers.
+			this.speed = this.computeFeasibleSpeed(jetsTrgtPowers);
+			
+			if (this.speed != trgtSpeed)
+				System.out.println("Requested speed= " + trgtSpeed + " but feasible speed is " + this.speed + ".\n");
+			
+			if (trgtSpeed > this.speed) {
+				this.accelerate(jetsTrgtPowers);
+			}else {
+				this.decelerate(jetsTrgtPowers);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Compute the maximum speed the rocket can go closest to the requested target speed.
+	 * The maximum speed is computed based on the maximum powers each jet engine in the rocket can deliver.
+	 *  
+	 * @param trgtPowers The requested power for each one of the rocket's jet engine.
+	 * @return The maximum closest speed to the requested speed based on the rocket's jet engine max powers. 
+	 */
+	private double computeFeasibleSpeed(double[] trgtPowers) {
+		double accumPower = 0;
+		
+		for(int idx = 0; idx < this.numJets; idx++) {
+			accumPower = accumPower + Math.min(trgtPowers[idx], this.jetsPower.get(idx).maxPower); // Get minimum between requested power and max power for the jet engine.
+		}
+		
+		return  (this.speed + (int) (100.0 * Math.sqrt(accumPower)));
+		
+	}
+	
+	public void accelerate(double[] jetPowers) {
 		
 		this.checkJetPowersLength(jetPowers.length);
 		
@@ -86,7 +143,7 @@ public class Rocket {
 		}
 	}
 	
-	public void decelerate(int[] jetPowers) {
+	public void decelerate(double[] jetPowers) {
 		
 		this.checkJetPowersLength(jetPowers.length);
 		

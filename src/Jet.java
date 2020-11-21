@@ -3,9 +3,9 @@ public class Jet implements Runnable {
 	
 	int maxPower;
 	
-	int currentPower = 0;
+	double currentPower = 0.0;
 	
-	int trgtPower;
+	double trgtPower;
 	
 	public Jet(int maxPower) {
 		this.maxPower = maxPower;
@@ -27,7 +27,7 @@ public class Jet implements Runnable {
 	 * @param trgtPower integer value specifying the target power to achieve in Watts. It must be positive and lower than maxPower value of the engine.
 	 * @throws TargetPowerOutOfRangeException When the target power requested is negative or exceeds the maximum power reachable for the jet engine.
 	 */
-	public void setTargetPower(int trgtPower) throws TargetPowerOutOfRangeException {
+	public void setTargetPower(double trgtPower) throws TargetPowerOutOfRangeException {
 		
 		// We allow the value to be set and delegate the control to the run() method delivering the power.
 		this.trgtPower = trgtPower; 
@@ -42,12 +42,20 @@ public class Jet implements Runnable {
 	@Override
 	public void run() {
 		
-		int affordableTargetPower = Math.max(0, this.trgtPower);
+		double affordableTargetPower = Math.max(0, this.trgtPower);
 		affordableTargetPower = Math.min(affordableTargetPower, this.maxPower);
+		
+		affordableTargetPower = (double) Math.round(affordableTargetPower * 100)/100; // Truncamos a 2 dígitos decimales para evitar quedarnos dando saltos alrededor del valor objetivo.
 		
 		while(this.currentPower != affordableTargetPower) {
 			
-			this.currentPower = this.currentPower + (int)Math.signum(affordableTargetPower - this.currentPower);
+			// Si el power es menor que zero tenemos que hacer incrementos menores de 1 o nos quedaremos dando saltos alrededor del valor objetivo.
+			if (affordableTargetPower < 1 && affordableTargetPower > 0)
+				this.currentPower = this.currentPower + (0.01 * Math.signum(affordableTargetPower - this.currentPower));
+			else
+				this.currentPower = this.currentPower + (int)Math.signum(affordableTargetPower - this.currentPower);
+			
+			this.currentPower = (double) Math.round(this.currentPower * 100)/100; // Truncamos a 2 dígitos decimales para evitar quedarnos dando saltos alrededor del valor objetivo.
 			
 			String info = "Thread: '" + Thread.currentThread() + "' -> pwr/trgt: " + this.currentPower + "/" + affordableTargetPower;
 			if(this.trgtPower != affordableTargetPower)

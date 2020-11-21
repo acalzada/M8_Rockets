@@ -2,7 +2,7 @@
 public class MainAPP {
 
 	public static void main(String[] args) {
-		
+
 		// ----   FASE 1    ----
 		
 		System.out.println("\n--- FASE 1 ---\n");
@@ -44,12 +44,27 @@ public class MainAPP {
 		
 		Rocket rocket_5 = new Rocket("12345678", new int[] {10, 20, 40});
 		System.out.println(rocket_5.toString());
-		rocket_5.accelerate(new int[] {5,10,50});
+		rocket_5.accelerate(new double[] {5,10,50});
 		
 		rocket_5.waitForJetThreadsToFinish();
 		
-		rocket_5.decelerate(new int[] {-2, 1, 0});
+		rocket_5.decelerate(new double[] {-2, 1, 0});
+		rocket_5.waitForJetThreadsToFinish();
 
+
+	// ----   FASE 4    ----
+		
+		System.out.println("\n--- FASE 4 ---\n");
+		
+		Rocket rocket_6 = new Rocket("Rocket_6", new int[] {10, 20, 40});;
+		
+		rocket_6.setRocketTargetSpeed(110);
+		rocket_6.waitForJetThreadsToFinish();
+		rocket_6.setRocketTargetSpeed(500);
+		rocket_6.waitForJetThreadsToFinish();
+		System.out.println("\n\n========================\n");
+		System.out.println("--  Program Finished  --\n");
+		System.out.println("========================\n");
 	}
 
 }
